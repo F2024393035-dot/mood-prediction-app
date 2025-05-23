@@ -1,0 +1,6 @@
+import joblib
+
+# Save trained model and vectorizer
+joblib.dump(model, 'mood_model.pkl')
+joblib.dump(vectorizer, 'tfidf_vectorizer.pkl')
+joblib.dump(le, 'label_encoder.pkl')
