@@ -1,0 +1,31 @@
+import streamlit as st
+import joblib
+import re
+
+# Load model and vectorizer
+model = joblib.load("mood_model.pkl")
+vectorizer = joblib.load("tfidf_vectorizer.pkl")
+label_encoder = joblib.load("label_encoder.pkl")
+
+# Text cleaning function
+def clean_text(text):
+    text = text.lower()
+    text = re.sub(r"[^a-zA-Z\s]", "", text)
+    return text
+
+# Streamlit UI
+st.set_page_config(page_title="Mood Detection", layout="centered")
+st.title("🧠 Mood Detection App")
+st.markdown("Enter any journal or social media text to predict emotional tone.")
+
+user_input = st.text_area("✍️ Enter text here:")
+
+if st.button("Predict Mood"):
+    if user_input.strip() == "":
+        st.warning("Please enter some text.")
+    else:
+        cleaned = clean_text(user_input)
+        vectorized = vectorizer.transform([cleaned])
+        prediction = model.predict(vectorized)
+        mood = label_encoder.inverse_transform(prediction)[0]
+        st.success(f"💬 Predicted Mood: **{mood.capitalize()}**")
